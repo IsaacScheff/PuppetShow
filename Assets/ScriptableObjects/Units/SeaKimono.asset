@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc72c212780ba4e7794fff22adcc121f, type: 3}
+  m_Name: SeaKimono
+  m_EditorClassIdentifier: 
+  unitName: Sea Kimono
+  maxHealth: 18
+  attack: 7
+  defense: 2
+  initiative: 45
+  cost: 35
+  unitImage: {fileID: 21300000, guid: bae0125232a2f4973b355f63b11a7c3b, type: 3}
+  attacks:
+  - {fileID: 11400000, guid: f0bd1cd0430a440bfba0afb1383e34fa, type: 2}
+  - {fileID: 11400000, guid: 3400f2ca9fd3a485db92b84ba6405d96, type: 2}
+  enemyTargetingBehavior: {fileID: 11400000, guid: d2959b44c3e02487cb3ffa4c9b963d92, type: 2}
+  allyTargetingBehavior: {fileID: 11400000, guid: 1b9221115bd554303a06ddc0c28a2fd9, type: 2}
+  attackSelectionBehavior: {fileID: 11400000, guid: 0170fa0bc2132433381f6b2be15d62f4, type: 2}
