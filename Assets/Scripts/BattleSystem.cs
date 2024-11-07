@@ -12,6 +12,8 @@ public class BattleSystem : MonoBehaviour {
 
     public TextMeshProUGUI battleLogText; 
     public Button returnToShopButton; 
+    public Button beginBattleButton;
+
     private List<Unit> playerUnits;   
     private List<Unit> enemyUnits;  
     private List<Unit> allUnits;  
@@ -19,17 +21,19 @@ public class BattleSystem : MonoBehaviour {
     private float actionDelay = 0.65f;
     public UnitManager unitManager; 
     private const float initiativeToAttack = 100f;
-    private void Start() {
-        InitializeBattle();
-        StartCoroutine(StartBattle());
 
-        // Ensure the return button is hidden at the start of the battle
-        if (returnToShopButton != null) {
-            returnToShopButton.gameObject.SetActive(false);
-            returnToShopButton.onClick.AddListener(ReturnToShop);
+    private bool isPreBattleSetup = true;
+    private void Start() {
+        InitializePreBattle();
+        //StartCoroutine(StartBattleRoutine());
+
+        if (beginBattleButton != null) {
+            beginBattleButton.gameObject.SetActive(true);
+            beginBattleButton.onClick.AddListener(StartBattle);
         }
     }
-    private void InitializeBattle() {
+
+    private void InitializePreBattle() {
         allUnits = new List<Unit>();
         playerUnits = new List<Unit>();
         enemyUnits = new List<Unit>();
@@ -38,10 +42,10 @@ public class BattleSystem : MonoBehaviour {
         List<UnitData> playerUnitsData = unitManager.GetPlayerUnitsForBattle();
         List<UnitData> enemyUnitsData = unitManager.GetEnemyUnitsForBattle();
 
+        Debug.Log("Initializing player units for pre-battle setup...");
         for (int i = 0; i < playerUnitsData.Count; i++) {
             if (i < playerSpawnPoints.Length) {
                 Unit unit = unitFactory.CreateUnit(playerUnitsData[i], playerSpawnPoints[i]);
-                unit.OnAttackPerformed += UpdateBattleLog;  // Subscribe to the event
                 playerUnits.Add(unit);
                 allUnits.Add(unit);
                 initiativeTotals[unit] = 0f;
@@ -49,18 +53,40 @@ public class BattleSystem : MonoBehaviour {
             }
         }
 
+        Debug.Log("Initializing enemy units for pre-battle setup...");
         for (int i = 0; i < enemyUnitsData.Count; i++) {
             if (i < enemySpawnPoints.Length) {
                 Unit unit = unitFactory.CreateUnit(enemyUnitsData[i], enemySpawnPoints[i]);
-                unit.OnAttackPerformed += UpdateBattleLog;  // Subscribe to the event
                 enemyUnits.Add(unit);
                 allUnits.Add(unit);
                 initiativeTotals[unit] = 0f;
                 Debug.Log($"Created Enemy Unit: {unit.unitData.unitName}, Health: {unit.GetCurrentHealth()}");
             }
         }
+
+        if (beginBattleButton != null) {
+            beginBattleButton.gameObject.SetActive(true);
+        }
     }
-    private IEnumerator StartBattle() {
+
+
+    public void StartBattle() {
+        // Lock in unit positions and start the battle
+        isPreBattleSetup = false;
+        StartCoroutine(StartBattleRoutine());
+
+        // Hide Begin Battle button after starting
+        if (beginBattleButton != null) {
+            beginBattleButton.gameObject.SetActive(false);
+        }
+
+        // Ensure the return button is hidden at the start of the battle
+        if (returnToShopButton != null) {
+            returnToShopButton.gameObject.SetActive(false);
+            returnToShopButton.onClick.AddListener(ReturnToShop);
+        }
+    }
+    private IEnumerator StartBattleRoutine() {
         bool battleOngoing = true;
 
         while (battleOngoing) {
